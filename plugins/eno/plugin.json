@@ -1,0 +1,36 @@
+{
+  "name": "Eno",
+  "id": "eno",
+  "version": "0.1.0",
+  "description": "Claude plugin for vibe-coding guidance and Vercel-first website go-live automation with custom domain setup.",
+  "author": "Eno Team",
+  "runtime": "python",
+  "entrypoint": "eno.cli:main",
+  "capabilities": [
+    {
+      "id": "vibe_coding_advisor",
+      "title": "Vibe Coding Advisor",
+      "description": "Provides practical prompts, readiness checklists, and common mistakes with fixes."
+    },
+    {
+      "id": "analyze_project",
+      "title": "Analyze Project",
+      "description": "Detect static vs Next.js and report deploy blockers."
+    },
+    {
+      "id": "prepare_deploy_vercel",
+      "title": "Prepare Deploy Vercel",
+      "description": "Generate Vercel-first deployment checklist, commands, and basic GitHub readiness checks."
+    },
+    {
+      "id": "connect_domain",
+      "title": "Connect Domain",
+      "description": "Generate DNS records and provider templates for Cloudflare, GoDaddy, Namecheap, and generic DNS."
+    },
+    {
+      "id": "validate_go_live",
+      "title": "Validate Go Live",
+      "description": "Validate apex/www DNS mapping and HTTPS go-live checklist."
+    }
+  ]
+}
