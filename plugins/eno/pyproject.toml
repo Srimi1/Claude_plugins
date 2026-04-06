@@ -12,6 +12,9 @@ license = {text = "MIT"}
 authors = [
   {name = "Eno Team"}
 ]
+dependencies = [
+  "mcp>=1.0",
+]
 
 [project.scripts]
 eno = "eno.cli:main"
