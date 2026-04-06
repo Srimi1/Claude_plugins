@@ -21,11 +21,19 @@ def detect_project_type(project_path: str) -> str:
     path = Path(project_path)
     pkg = _read_package_json(path)
 
-    if pkg.get("dependencies", {}).get("next") or pkg.get("devDependencies", {}).get("next"):
+    deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
+
+    if deps.get("next") or (path / "next.config.js").exists() or (path / "next.config.mjs").exists():
         return "nextjs"
 
-    if (path / "next.config.js").exists() or (path / "next.config.mjs").exists():
-        return "nextjs"
+    if deps.get("@sveltejs/kit") or (path / "svelte.config.js").exists() or (path / "svelte.config.ts").exists():
+        return "sveltekit"
+
+    if deps.get("react-scripts"):
+        return "cra"
+
+    if deps.get("vite") or (path / "vite.config.js").exists() or (path / "vite.config.ts").exists():
+        return "vite"
 
     static_markers = ["index.html", "public/index.html"]
     if any((path / marker).exists() for marker in static_markers):
@@ -53,13 +61,18 @@ def analyze_project(project_path: str) -> OperationResult:
     actions: list[str] = []
     status = STATUS_OK
 
-    if project_type == "nextjs":
-        findings.append("Detected Next.js project.")
-    elif project_type == "static":
-        findings.append("Detected static website project.")
+    type_messages = {
+        "nextjs": "Detected Next.js project. Build output: .next/ — deploy via Vercel or Netlify.",
+        "sveltekit": "Detected SvelteKit project. Build output depends on adapter (default: build/).",
+        "cra": "Detected Create React App project. Build output: build/ — deploy via Netlify or GitHub Pages.",
+        "vite": "Detected Vite project. Build output: dist/ — deploy via Netlify, Vercel, or GitHub Pages.",
+        "static": "Detected static website project. Deploy root directory or public/ folder.",
+    }
+    if project_type in type_messages:
+        findings.append(type_messages[project_type])
     else:
         status = STATUS_WARN
-        findings.append("Could not confidently detect project type (expected static or Next.js).")
+        findings.append("Could not confidently detect project type (expected static, Vite, CRA, SvelteKit, or Next.js).")
         actions.append("Add package.json and/or index.html so Eno can infer deployment path.")
 
     if pkg.get("_invalid"):
@@ -73,8 +86,8 @@ def analyze_project(project_path: str) -> OperationResult:
                 status = STATUS_WARN
             findings.append("No build script found in package.json.")
             actions.append("Add a build script (for example: next build).")
-        if "start" not in scripts and project_type == "nextjs":
-            findings.append("No start script found; Vercel can still deploy, but local validation may be limited.")
+        if "start" not in scripts and project_type in ("nextjs", "cra"):
+            findings.append("No start script found; deployment platforms can still deploy, but local validation may be limited.")
 
     env_files = [".env", ".env.local", ".env.production"]
     found_env = [name for name in env_files if (path / name).exists()]

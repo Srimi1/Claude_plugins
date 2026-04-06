@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .contracts import OperationResult, STATUS_OK, STATUS_WARN
 
-SUPPORTED_PROVIDERS = {"generic", "cloudflare", "godaddy", "namecheap"}
+SUPPORTED_PROVIDERS = {"generic", "cloudflare", "godaddy", "namecheap", "porkbun", "squarespace", "route53"}
 
 
 def _generic_records(domain: str, apex_target: str, www_target: str) -> list[dict[str, str]]:
@@ -41,9 +41,30 @@ def _provider_template(provider: str) -> list[str]:
             "Create Host Records for @ (A) and www (CNAME).",
             "Disable old URL redirect records that override DNS.",
         ]
+    if provider == "porkbun":
+        return [
+            "Log in to Porkbun -> Domain Management -> DNS.",
+            "Add A record: host = (blank or @), answer = apex IP.",
+            "Add CNAME record: host = www, answer = deployment CNAME hostname.",
+            "Delete any existing conflicting A or CNAME records first.",
+        ]
+    if provider == "squarespace":
+        return [
+            "Log in to Squarespace (formerly Google Domains) -> Select domain -> DNS.",
+            "Go to Custom Records and click Add record.",
+            "Add A record: host = @, data = apex IP.",
+            "Add CNAME record: host = www, data = deployment CNAME hostname.",
+        ]
+    if provider == "route53":
+        return [
+            "Open AWS Console -> Route 53 -> Hosted zones -> select your domain.",
+            "Click Create record, set Type = A, Name = (empty for apex), Value = apex IP.",
+            "Click Create record again, set Type = CNAME, Name = www, Value = deployment CNAME hostname.",
+            "Set TTL to 300 for faster propagation during initial setup.",
+        ]
     return [
         "Add A record for @ and CNAME for www in your DNS panel.",
-        "If provider asks for verification, add TXT records exactly as provided by Vercel.",
+        "If provider asks for verification, add TXT records exactly as provided by your deployment platform.",
     ]
 
 
