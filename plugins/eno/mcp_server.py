@@ -1,6 +1,15 @@
-"""Eno MCP Server — exposes Eno capabilities as Claude tools via MCP stdio transport."""
+"""Eno MCP Server — exposes Eno capabilities as Claude tools.
+
+Supports two transports:
+  stdio (default)  — for Claude Code CLI / desktop
+      python mcp_server.py
+
+  http             — for Claude.ai web (Integrations → Custom plugin)
+      python mcp_server.py --http [--port 8000]
+"""
 from __future__ import annotations
 
+import argparse
 import sys
 import os
 
@@ -82,4 +91,15 @@ def validate_go_live(
 
 
 if __name__ == "__main__":
-    mcp.run()
+    parser = argparse.ArgumentParser(description="Eno MCP Server")
+    parser.add_argument("--http", action="store_true", help="Use HTTP/SSE transport (for Claude.ai web)")
+    parser.add_argument("--port", type=int, default=8000, help="Port for HTTP transport (default: 8000)")
+    parser.add_argument("--host", default="0.0.0.0", help="Host for HTTP transport (default: 0.0.0.0)")
+    args = parser.parse_args()
+
+    if args.http:
+        # HTTP/SSE mode — for Claude.ai Integrations
+        mcp.run(transport="streamable-http", host=args.host, port=args.port)
+    else:
+        # stdio mode — for Claude Code CLI/desktop
+        mcp.run(transport="stdio")
