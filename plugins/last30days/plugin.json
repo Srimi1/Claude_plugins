@@ -1,0 +1,46 @@
+{
+  "name": "last30days",
+  "id": "last30days",
+  "version": "2.9.6",
+  "description": "Deep research engine covering the last 30 days across 10+ sources - Reddit, X/Twitter, YouTube, TikTok, Instagram, Hacker News, Polymarket, and the web. Synthesizes findings into grounded, cited reports.",
+  "author": "mvanhorn",
+  "source": "https://github.com/mvanhorn/last30days-skill",
+  "install_path": "~/.claude/skills/last30days",
+  "runtime": "python",
+  "skill_command": "/last30days",
+  "capabilities": [
+    {
+      "id": "research",
+      "title": "Topic Research",
+      "description": "Research any topic across Reddit, X/Twitter, YouTube, TikTok, Instagram, Hacker News, Polymarket, and the web from the last 30 days."
+    },
+    {
+      "id": "comparative",
+      "title": "Comparative Analysis",
+      "description": "Side-by-side comparison of two topics (e.g. 'Claude Code vs Codex')."
+    },
+    {
+      "id": "watchlist",
+      "title": "Watchlist Management",
+      "description": "Set up recurring research topics to monitor over time."
+    },
+    {
+      "id": "briefings",
+      "title": "Morning Briefings",
+      "description": "Generate briefings from accumulated watchlist research."
+    }
+  ],
+  "zero_config_sources": ["Reddit", "Hacker News", "Polymarket"],
+  "optional_api_keys": {
+    "OPENAI_API_KEY": "Reddit search via OpenAI responses API",
+    "XAI_API_KEY": "X search via xAI Grok API",
+    "PARALLEL_API_KEY": "Web search via Parallel AI",
+    "BRAVE_API_KEY": "Web search via Brave Search",
+    "OPENROUTER_API_KEY": "Web search via Perplexity Sonar Pro"
+  },
+  "usage": {
+    "basic": "/last30days [topic]",
+    "comparative": "/last30days [topic1] vs [topic2]",
+    "flags": ["--days=N", "--quick", "--deep", "--sources=[reddit|x]", "--diagnose"]
+  }
+}
