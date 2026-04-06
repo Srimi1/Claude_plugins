@@ -1,0 +1,2 @@
+[console_scripts]
+eno = eno.cli:main

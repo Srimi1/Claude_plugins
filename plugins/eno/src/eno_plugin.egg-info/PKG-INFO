@@ -1,0 +1,67 @@
+Metadata-Version: 2.4
+Name: eno-plugin
+Version: 0.1.0
+Summary: Eno Claude plugin for vibe coding and Vercel go-live workflows
+Author: Eno Team
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# Eno Plugin
+
+Eno is a Claude plugin that helps you:
+
+1. Improve vibe-coding workflows with actionable prompts and quality gates.
+2. Detect project readiness for deployment (static or Next.js).
+3. Go live on Vercel and connect a custom domain with DNS templates.
+4. Validate DNS + HTTPS readiness after deployment.
+
+## Supported V1 scope
+
+- Project types: static websites and Next.js
+- Hosting target: Vercel-first
+- DNS templates: generic, Cloudflare, GoDaddy, Namecheap
+- GitHub checks: basic local repo readiness checks
+
+## Install (local)
+
+```bash
+cd plugins/eno
+python3 -m pip install -e .
+```
+
+## Commands
+
+```bash
+eno vibe_advice
+eno analyze_project /path/to/project
+eno prepare_deploy_vercel /path/to/project --run-automation
+eno connect_domain example.com --provider cloudflare --needs-verification-txt
+eno validate_go_live example.com
+```
+
+## Contracted operations and output format
+
+Each operation returns JSON containing:
+
+- `status`
+- `findings`
+- `actions`
+- `commands`
+- `next_steps`
+
+Core operations:
+
+- `analyze_project`
+- `prepare_deploy_vercel`
+- `connect_domain`
+- `validate_go_live`
+
+Additional advisor capability:
+
+- `vibe_advice`
+
+## Notes
+
+- `prepare_deploy_vercel` suggests commands and can mark automation intent; it does not force execution.
+- `validate_go_live` uses `dig` when available for DNS checks and falls back to manual guidance otherwise.
