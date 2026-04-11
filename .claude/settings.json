@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "eno": {
+      "command": "/usr/local/bin/python",
+      "args": ["/home/user/Claude_plugins/plugins/eno/mcp_server.py"],
+      "env": {}
+    }
+  },
+  "enableAllProjectMcpServers": true
+}
